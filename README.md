@@ -1,4 +1,4 @@
-#  HW TechArena 2025 - BESS Optimization (Team Grid Hacker)
+#  HW TechArena 2025 - BESS Optimization (Team Grid Hackerss)
 
 ##  Introduction
 This project applies **Pyomo mathematical modeling** and the **Gurobi optimizer** to simulate the optimal scheduling of **Battery Energy Storage Systems (BESS)** based on 2024 market data (Day-ahead, FCR, and aFRR).  
