@@ -49,7 +49,6 @@ This section explains how the rolling-horizon operation optimization works, what
 ### Solver hints (Gurobi)
 - MILP(1): `TimeLimit=150s, MIPGap=0.5%, MIPFocus=1, Heuristics=0.25`.
 - MILP(2) polish: `TimeLimit=60s, MIPGap=0.25%, MIPFocus=1, Heuristics=0.3`.
-- LP polish: `TimeLimit=30s` with executed-week integers fixed, lookahead continuous free.
 
 ### Stability & reproducibility
 - Use `tiny ≈ 1e-6…1e-5` as cushion, `eps ≈ 1e-9` only for clipping.
@@ -58,7 +57,6 @@ This section explains how the rolling-horizon operation optimization works, what
 
 ### Common pitfalls
 - Revenue off by ×16 → wrong price unit.
-- Frequent boundary warnings → increase `tiny`, shorten LP polish.
 - Warm-start warnings → round integers or use continuous reserves.
 
 ---
