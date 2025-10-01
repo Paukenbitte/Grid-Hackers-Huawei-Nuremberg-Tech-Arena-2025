@@ -32,7 +32,8 @@ The project generates three sets of results in the `output/` directory:
 
 ##  Market Step Sizes
 - **FCR**: According to market rules and regulations, the power step size is set to **1 MW** for all countries.  
-- **aFRR**: The power step size is set to **0.1 MW** for all countries.  
+- **aFRR**: The power step size is set to **1 MW** for all countries.
+- **Day-ahead prices**: The energy step size is set to **0.1 MW** for all countries.
 
 ##  Solver Support
 This code is optimized for use with the Gurobi solver:
