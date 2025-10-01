@@ -17,6 +17,53 @@ We further evaluate the **investment profitability** for BESS deployment in diff
 
 ---
 
+##  Approach — Operation Optimization
+This section explains how the rolling-horizon operation optimization works, what to prepare, how to run it fast and reproducibly, and which knobs to tweak for your final runs.
+
+### What the optimizer does
+- **Scope**: battery arbitrage + reserve capacity (FCR / aFRR±) with a rolling window.
+- **Workflow per window**:
+  1. LP warm-start (continuous relaxation) → good starting point.
+  2. MILP solve (executed week has 0.1MW DA discretization + binaries).
+  3. Polish (optional but recommended): 2nd MILP with tighter gap, then LP polish fixing only the executed week’s discrete “skeleton”.
+- **Write-back**: only the executed week is written to results; the horizon rolls by one week.
+- **SOC terminal policy**: hard band at window end + linear penalty to keep end-SOC near target.
+
+### Time grid, horizon, and services
+- Base step: 15 min (dt = 0.25 h).
+- Block size: 4 h blocks for FCR/aFRR capacities (block-constant).
+- Typical horizon: exec_weeks = 1, lookahead_weeks = 2.
+- DA discretization: 0.1MW steps in the executed week only.
+
+### Price unit conventions
+- If capacity prices are in €/MW·h  
+  `revenue += price * capacity * dt` (for every 15-min step).
+- If capacity prices are in €/MW per 4h block  
+  add `price * capacity` once at the block start, **do not** multiply by dt, **do not** divide by 16.  
+⚠️ Mis-matching this will shift results by up to ×16.
+
+### Model highlights
+- **Decision variables**: DA buy/sell power, FCR & aFRR reserves, SOC trajectory, binaries for executed week.
+- **Constraints**: power limits with efficiency, energy headroom, daily cycle cap, 4h block-constant reserves, mutually exclusive switches, terminal SOC band.
+- **Objective**: maximize DA + reserve revenues − terminal SOC penalty.
+
+### Solver hints (Gurobi)
+- MILP(1): `TimeLimit=150s, MIPGap=0.5%, MIPFocus=1, Heuristics=0.25`.
+- MILP(2) polish: `TimeLimit=60s, MIPGap=0.25%, MIPFocus=1, Heuristics=0.3`.
+- LP polish: `TimeLimit=30s` with executed-week integers fixed, lookahead continuous free.
+
+### Stability & reproducibility
+- Use `tiny ≈ 1e-6…1e-5` as cushion, `eps ≈ 1e-9` only for clipping.
+- Confirm price units once (€/MW·h vs €/MW per block).
+- Store solver settings, SoC bounds, alpha in metadata for reproducibility.
+
+### Common pitfalls
+- Revenue off by ×16 → wrong price unit.
+- Frequent boundary warnings → increase `tiny`, shorten LP polish.
+- Warm-start warnings → round integers or use continuous reserves.
+
+---
+
 ##  Installation
 ```bash
 git clone https://github.com/Paukenbitte/Grid-Hackers-Huawei-Nuremberg-Tech-Arena-2025.git
