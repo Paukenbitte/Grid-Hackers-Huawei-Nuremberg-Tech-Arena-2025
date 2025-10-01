@@ -25,7 +25,6 @@ This section explains how the rolling-horizon operation optimization works, what
 - **Workflow per window**:
   1. LP warm-start (continuous relaxation) → good starting point.
   2. MILP solve (executed week has 0.1MW DA discretization + binaries).
-  3. Polish (optional but recommended): 2nd MILP with tighter gap, then LP polish fixing only the executed week’s discrete “skeleton”.
 - **Write-back**: only the executed week is written to results; the horizon rolls by one week.
 - **SOC terminal policy**: hard band at window end + linear penalty to keep end-SOC near target.
 
