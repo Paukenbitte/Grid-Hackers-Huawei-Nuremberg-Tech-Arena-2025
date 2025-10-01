@@ -1,17 +1,18 @@
 #  HW TechArena 2025 - BESS Optimization (Team Grid Hackerss)
 
 ##  Introduction
-This project applies **Pyomo mathematical modeling** and the **Gurobi optimizer** to simulate the optimal scheduling of **Battery Energy Storage Systems (BESS)** based on 2024 market data (Day-ahead, FCR, and aFRR).  
-
-We further evaluate the **investment profitability** across multiple countries, identify the **optimal configuration parameters**, and perform a comparative analysis to determine which country provides the most favorable long-term environment for BESS deployment.  
+This project leverages **Pyomo mathematical modeling** and the **Gurobi optimizer** to optimize the scheduling of **Battery Energy Storage Systems (BESS)** across multiple electricity markets, using real 2024 Day-Ahead, FCR, and aFRR price data.  
+ 
+We further evaluate the **investment profitability** for BESS deployment in different countries, systematically compare configuration parameters, and identify the most attractive investment opportunities for long-term operation.
 
 ---
 
 ##  Features
--  **Market Data Processing**: Read Day-ahead, FCR, and aFRR market prices from Excel input files.  
--  **Operation Optimization**: Optimize daily operation strategies using Pyomo + Gurobi, identifying the best charge/discharge time windows.  
--  **Investment Optimization**: Calculate 10-year cash flows starting from 2024, based on country-specific WACC and inflation rates, and evaluate ROI.  
--  **Configuration Optimization**: Explore combinations of 3 different **C-rates** and 3 different **daily cycle numbers** to determine the best operation parameters for each country.  
+-  **Market Data Processing**: Reads and cleans Day-Ahead, FCR, and aFRR market prices from input Excel files, and prepares them for use in all subsequent calculations.
+-  **Operation Optimization**: Optimizes daily BESS operation strategies using Pyomo + Gurobi. For each country, C-rate, and daily cycle scenario, the algorithm determines optimal charge/discharge actions at every time step, maximizing yearly revenue.
+-  **run_all_scenarios.py**:  Runs all combinations of countries (5), C-rates (3), and daily cycles (3), calculates 10-year cashflow (starting from 2024), and evaluates the ROI for every case, considering country-specific WACC and inflation rates.
+-  **Investment Optimization**: Analyzes and compares all results to identify the country with the highest levelized ROI and its optimal configuration. Outputs the top-performing solutions.
+-  **Configuration Optimization**:  Compares all configurations to find the C-rate and daily cycle combination that yields the highest ROI.  
 -  **Result Export**: Automatically generate Excel output files including **Configuration**, **Investment**, and **Operation** analyses for five different countries.  
 
 ---
@@ -34,6 +35,6 @@ The project generates three sets of results in the `output/` directory:
 - **aFRR**: The power step size is set to **0.1 MW** for all countries.  
 
 ##  Solver Support
-Our code supports multiple solvers:
-- By default, it will automatically detect and use open-source solvers such as **HiGHS**, **GLPK**, or **CBC**.  
-- If **Gurobi** is installed and licensed, the program will automatically prioritize Gurobi to ensure **faster and more stable performance**.  
+This code is optimized for use with the Gurobi solver:
+- If Gurobi is installed and licensed, the program will automatically utilize it to ensure fast and stable performance. 
+- Other open-source solvers such as GLPK or HiGHS are also supported but may be significantly slower due to the large problem size.
